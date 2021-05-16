@@ -35,7 +35,7 @@ class Bot:
         # if qty of shares is greater than 1 we are in a long buy position,
         # so we will sell if price falls below 10 percent
 
-            if int(position.qty) > 0 and float(position.change_today) > .1:
+            if int(position.qty) > 0 and float(position.change_today) < -.1:
                 percent_change = position.avg_entry_price - (position.avg_entry_price*.1)
                 print('sell stop loss of {} at {} percent loss with price {}'.format(position.symbol, percent_change, position.current_price))
                 api.submit_order(symbol=portfolio.symbol, 
