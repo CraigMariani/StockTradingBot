@@ -1,8 +1,11 @@
 import numpy as np 
 import pandas as pd 
 import datetime as dt 
+import pytz
 import alpaca_trade_api as tradeapi
 from secret import Secret
+import time
+
 
 class Bot:
 
@@ -140,16 +143,31 @@ class Bot:
 if __name__ == '__main__':
     b = Bot()
     # b.check_account()
+    tz_pacific = pytz.timezone('US/Pacific')
+    datetime_pacific = dt.datetime.now(tz_pacific)
+    current_time = datetime_pacific.strftime("%H:%M:%S")
+    now = dt.datetime.now()
+    
+    # create an infinite loop with a rest period every hour using sleep 
+    # build a new image called trading-bot-linux
+    # follow the commands to push it to docker hub and deploy to digital ocean
 
-    data, tickers = b.get_paper_data()
+    market_open = now.replace(hour=6, minute=30, second=0, microsecond=0, tzinfo=tz_pacific) # 6:30 am 
 
-    for i, data_set in enumerate(data):
-        result = b.check_trade(data_set, tickers[i])
+    market_close = now.replace(hour=13, minute=0, second=0, microsecond=0, tzinfo=tz_pacific) # 1:00 pm  
+    
+    while(True):
+        if datetime_pacific > market_open and datetime_pacific < market_close:
+            data, tickers = b.get_paper_data()
+            
+            for i, data_set in enumerate(data):
+                result = b.check_trade(data_set, tickers[i])
 
-        if result[0] != None:
-            b.execute_trade(result[0], result[1])
+                if result[0] != None:
+                    b.execute_trade(result[0], result[1])
 
-    b.check_stop_loss()
+            b.check_stop_loss()
+            time.sleep(3600)
     
     
     
