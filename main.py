@@ -157,7 +157,8 @@ if __name__ == '__main__':
     market_close = now.replace(hour=13, minute=0, second=0, microsecond=0, tzinfo=tz_pacific) # 1:00 pm  
     
     while(True):
-        if datetime_pacific > market_open and datetime_pacific < market_close:
+        # if datetime_pacific > market_open and datetime_pacific < market_close:
+        if datetime_pacific > market_open:
             data, tickers = b.get_paper_data()
             
             for i, data_set in enumerate(data):
